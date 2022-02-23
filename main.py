@@ -33,6 +33,7 @@ Transforms = transforms.Compose([
 
 model = Generator(img_channels=3, features=64)
 model.load_state_dict(torch.load('./weights/Cartoonify_Generator.pt', map_location=torch.device(DEVICE)))
+model.to(DEVICE)
 model.eval()
 
 app = Flask(__name__)
@@ -56,7 +57,7 @@ def handle_requests_by_batch():
 def generate(file):
     try:
         binary = file.read()
-        img = Image.open(BytesIO(binary))
+        img = Image.open(BytesIO(binary)).convert('RGB')
         transformImg = Transforms(img)
 
         out = model(transformImg.unsqueeze(0).to(DEVICE))
@@ -71,10 +72,14 @@ def generate(file):
         
         return bufferOut
     except Exception as e:
+        print(e)
         return "error"
 
 @app.route('/cartoonify', methods=['POST'])
 def cartoonify():
+    if requestsQueue.qsize() > BATCH_SIZE:
+        return Response('Too Many Request', status=429)
+
     try:
         file = request.files['file']
     except:
@@ -106,4 +111,4 @@ def main():
 threading.Thread(target=handle_requests_by_batch).start()
 
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0", port="5000")
+    app.run(host="0.0.0.0", port="5000")

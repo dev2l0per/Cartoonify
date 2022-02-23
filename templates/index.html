@@ -79,6 +79,8 @@
             return response
           } else if (response.status == 400) {
             throw Error('Please check "How To Use"');
+          } else if (response.status == 429) {
+            throw Error('Too Many Request');
           } else {
             throw Error('Server Error');
           }
