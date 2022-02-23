@@ -7,6 +7,8 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 <!-- [![image title][views-url] -->
 
+[![Run on Ainize](https://ainize.herokuapp.com/static/images/run_on_ainize_button.svg)](https://ainize.web.app/redirect?git_repo=https://github.com/dev2l0per/Cartoonify)
+
 # Cartoonify
 
 Pytorch Implementation [Translating Real Images to cartoon images using PIX2PIX - Image-to-Image Translation with Conditional Adversarial Networks](https://arxiv.org/abs/1611.07004) Phillip Isola, Jun-Yan Zhu, Tinghui Zhou, Alexei A. Efros

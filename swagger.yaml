@@ -1,0 +1,48 @@
+openapi: '3.0.2'
+info:
+  title: Cartoonify Ainize API Swagger
+  description: Cartoonify Ainize API Documentation
+  version: '1.0'
+  license:
+    name: MIT License
+    url: https://github.com/dev2l0per/Cartoonify/blob/ainize/LICENSE
+  contact:
+    name: Ainizer - JungHyo Yang
+    email: z-_-z1-@naver.com
+
+servers:
+  - url: https://ainize-cartoonify-dev2l0per.endpoint.ainize.ai
+
+paths:
+  /cartoonify:
+    post:
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+            encoding:
+              file:
+                contentType: image/png, image/jpg, image/jpeg
+      responses:
+        '200':
+          description: success
+          content:
+            image/*:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Empty Field
+        '500':
+          description: Server Error
+  /health:
+    get:
+      responses:
+        '200':
+          description: ok

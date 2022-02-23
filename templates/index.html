@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <title>Cartoonify</title>
+</head>
+
+<body>
+    <main style="display: flex; height: 100vh;">
+        <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
+            <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
+              <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+              <span class="fs-4">Cartoonify</span>
+            </a>
+            <hr>
+            <div class="nav nav-pills flex-column mb-auto dropdown">
+            </div>
+            <hr>
+            <ul class="list-group" style="padding-left: 20px;">
+              <li class="list-unstyled" style="margin-bottom: 5px;"><a class="text-decoration-none link-light" href="https://github.com/dev2l0per/Cartoonify">Github Repo</a></li>
+              <li class="list-unstyled" style="margin-bottom: 5px;"><a class="text-decoration-none link-light" href="https://ainize.ai/dev2l0per/Cartoonify?branch=ainize">API on Ainize</a></li>
+            </ul>
+          </div>
+          <div class="container" style="margin-top: 50px;">
+            <div class="container">
+              <h3 style="margin-bottom: 20px;">How to use ?</h3>
+              <ul class="list-group">
+                <li class="list-group-item">
+                  <input class="form-check-input me-1" id="uploadPhotoCheck" type="checkbox" aria-label="...">
+                  Upload Your Photo (png, jpg, jpeg)
+                </li>
+              </ul>
+            </div>
+            <hr>
+            <div class="container">
+              <div class="mb-3">
+                <label for="formFile" class="form-label">Upload Your Photo</label>
+                <input class="form-control" type="file" id="formFile">
+              </div>
+              <div class="mb-3" style="float: right;">
+                <button class="btn btn-primary" id="submitCartoonify">Confirm identity</button>
+              </div>
+            </div>
+            <div class="container" style="display: inline-block; text-align: center;">
+              <img id="resultImage"/>
+            </div>
+          </div>
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+        crossorigin="anonymous"></script>
+    <script>
+      const uploadPhoto = document.querySelector('#formFile');
+      uploadPhoto.addEventListener('change', (e) => {
+        const uploadPhotoCheck = document.querySelector('#uploadPhotoCheck');
+        if (uploadPhoto.value == null) {
+          uploadPhotoCheck.checked = false;
+          return ;
+        }
+        uploadPhotoCheck.checked = true;
+      });
+
+      const submitButton = document.querySelector('#submitCartoonify');
+      submitButton.onclick = () => {
+        submitButton.disabled = true;
+
+        const formData = new FormData();
+        formData.append('file', document.querySelector('#formFile').files[0]);
+
+        fetch("/cartoonify", {
+          method: 'POST',
+          body: formData,
+        }).then((response) => {
+          if (response.status == 200) {
+            return response
+          } else if (response.status == 400) {
+            throw Error('Please check "How To Use"');
+          } else {
+            throw Error('Server Error');
+          }
+        }).then((response) => response.blob())
+        .then((response) => {
+          const url = URL.createObjectURL(response);
+
+          document.querySelector('#resultImage').src = url;
+          submitButton.disabled = false;
+        }).catch((e) => {
+          alert(e);
+          submitButton.disabled = false;
+        });
+      };
+    </script>
+</body>
+
+</html>

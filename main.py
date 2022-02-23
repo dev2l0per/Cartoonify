@@ -1,7 +1,7 @@
 from queue import Empty, Queue
 import threading
 from flask import (
-    Flask, request, Response, send_file
+    Flask, request, Response, send_file, render_template
 )
 
 import torch
@@ -94,6 +94,14 @@ def cartoonify():
         return Response('Server Error', status=500)
 
     return send_file(io, mimetype=file.content_type)
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    return "ok"
+
+@app.route('/', methods=['GET'])
+def main():
+    return render_template('index.html')
 
 threading.Thread(target=handle_requests_by_batch).start()
 
